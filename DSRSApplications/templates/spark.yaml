@@ -1,0 +1,39 @@
+{{ if .Values.spark.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.cluster.name }}-spark
+  labels:
+    cluster: {{ .Values.cluster.name | quote }}
+    app: spark
+  namespace: argocd
+  annotations:
+    {{- toYaml .Values.notifications | nindent 4 }}
+spec:
+  project: {{ .Values.cluster.name }}
+  destination:
+    server: {{ .Values.cluster.url }}
+    namespace: spark
+  syncPolicy:
+    {{- if .Values.sync }}
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    {{- end }}
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: spark
+    targetRevision: {{ .Values.spark.version | quote }}
+    helm:
+      version: v3
+      releaseName: spark
+      values: |
+        image:
+          tag: 3.0.2-debian-10-r16
+          pullPolicy: IfNotPresent
+        worker:
+          replicaCount: {{ .Values.spark.workers }}
+{{- end }}

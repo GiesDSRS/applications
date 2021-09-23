@@ -1,0 +1,16 @@
+cluster:
+  name: gies-dsrs
+  url: "https://gonzo-rancher.ncsa.illinois.edu/k8s/clusters/c-4m7vv"
+  rancher:
+    id: c-4m7vv
+
+sync: false
+
+spark:
+  enabled: true
+  version: "3.1.*"
+  workers: 3
+
+
+notifications: {}
+#  notifications.argoproj.io/subscribe.slack: my-channel
